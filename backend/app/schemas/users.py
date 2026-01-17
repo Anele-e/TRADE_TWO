@@ -1,6 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 
 
+
 class User(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -10,6 +11,18 @@ class User(BaseModel):
     first_name: str
     last_name: str
     role: str
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "id": 1,
+                "username": "johndoe",
+                "email": "johndoe@example.com",
+                "first_name": "John",
+                "last_name": "Doe",
+                "role": "worker"
+            }
+        }
 
 class UserPrivate(User):
     hashed_password: str

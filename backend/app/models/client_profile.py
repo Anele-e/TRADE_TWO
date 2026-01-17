@@ -1,5 +1,7 @@
-from sqlalchemy.orm import Mapped, mapped_column, Enum, ForeignKey
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.types import DateTime
+from datetime import datetime
 
 from . import Base
 
@@ -11,8 +13,8 @@ class ClientProfile(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), unique=True, nullable=False)
     address: Mapped[str] = mapped_column(nullable=True)
     phone_number: Mapped[str] = mapped_column(nullable=True)
-    created_at: Mapped[DateTime] = mapped_column(nullable=False)
-    updated_at: Mapped[DateTime] = mapped_column(nullable=False)
+    created_at: Mapped[datetime] = mapped_column(nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(nullable=False)
 
     def __repr__(self) -> str:
         return f"<ClientProfile(id={self.id}, user_id={self.user_id})>"
