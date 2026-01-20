@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from app.core.config import get_settings
-from backend.app.api.routes import users_endpoints
-from backend.app.api.routes import auth
+from app.api.routes import users_endpoints
+from app.api.routes import auth
 
 
 
@@ -13,5 +13,5 @@ app.include_router(auth.router)
 
 
 @app.get("/")
-async def root():
-    return {"message": "Hello World"}
+async def health_check():
+    return {"status": "ok"}

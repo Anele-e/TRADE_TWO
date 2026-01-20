@@ -5,8 +5,8 @@ from enum import Enum as PyEnum
 from . import Base
 
 class UserRole(PyEnum):
-    CUSTOMER = "customer"
-    WORKER = "worker"
+    CUSTOMER = "CUSTOMER"
+    WORKER = "WORKER"
 
 
 class User(Base):
