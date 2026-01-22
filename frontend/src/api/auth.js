@@ -18,3 +18,8 @@ export const register = async ({username, email, first_name, last_name, role, pa
         throw error;
     }
 };
+
+export const getMe = async () => {
+    const response = await api.get('/users/me');
+    return response.data;
+};

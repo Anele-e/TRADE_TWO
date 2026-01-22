@@ -21,8 +21,8 @@ async def login(user_login: UserLogin, db: AsyncSession = Depends(get_db)):
             detail="Incorrect username or password",
         )
 
-    access_token = create_access_token(subject=str(user.id))
-    return {"access_token": access_token, "token_type": "bearer"}
+    token = create_access_token(subject=str(user.id))
+    return {"token": token, "token_type": "bearer"}
 
 
 
@@ -35,4 +35,5 @@ async def register_user(user_create: UserCreate, db: AsyncSession = Depends(get_
             detail="This User already exists",
         )
     new_user = await create_user(db, user_create)
-    return new_user
+    token = create_access_token(subject=str(new_user.id))
+    return {"token": token, "token_type": "bearer"}

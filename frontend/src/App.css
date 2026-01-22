@@ -10,6 +10,8 @@
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
+  text-decoration: none;
+
 }
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
@@ -40,3 +42,42 @@
 .read-the-docs {
   color: #888;
 }
+
+/* It loooks terrible but ok for now, will improve later the below nonsense */
+
+.navbar {
+  background-color: #ffffff;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f3ead7;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.navbar-container {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-links a {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: 1.5rem;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+}
+.navbar-button {
+  background-color: none;
+  border: 1px solid #f3ead7;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.navbar-button:hover {
+  background-color: #faf6ee;
+}
+
