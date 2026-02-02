@@ -1,22 +1,27 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from app.models.jobs import Job
-from app.schemas.jobs import JobCreate, JobUpdate
+from app.models.jobs_model import Job, JobStatus
+from app.schemas.jobs_schema import JobCreate, JobUpdate
+from datetime import datetime
 
 async def get_job_by_id(db: AsyncSession, job_id: int) -> Job | None:
     result = await db.execute(select(Job).where(Job.id == job_id))
     return result.scalars().first()
 
-async def create_job(db: AsyncSession, job_create: JobCreate) -> Job:
+async def create_job(db: AsyncSession, job_create: JobCreate, current_user_id: int) -> Job:
+    date_now = datetime.now()
     new_job = Job(
         title=job_create.title,
         description=job_create.description,
-        customer_id=job_create.customer_id,
+        customer_id=current_user_id,
         worker_id=job_create.worker_id,
-        status=job_create.status,
-        created_at=job_create.created_at,
-        updated_at=job_create.updated_at
-        
+        status=JobStatus.OPEN,
+        price=job_create.price,
+        latitude=job_create.latitude,
+        longitude=job_create.longitude,
+        location_address=job_create.location_address,
+        created_at=date_now,
+        updated_at=date_now    
     )
     db.add(new_job)
     await db.commit()

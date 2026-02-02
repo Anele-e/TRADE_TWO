@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from app.models.users import User
-from app.schemas.users import UserCreate, UserUpdate
+from app.models.users_model import User
+from app.schemas.users_schema import UserCreate, UserUpdate
 from app.core.security import hash_password
 
 async def get_user_by_id(db: AsyncSession, user_id: int) -> User | None:

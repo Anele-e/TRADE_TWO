@@ -16,7 +16,7 @@ export default function Register() {
             navigate("/");
         }
         catch (err) {
-            setError("Registration failed, Please try again.");
+            setError(`Sorry \n Registration failed: ${err.message}\n Please try again.`);
         }
     }
 
@@ -31,7 +31,11 @@ export default function Register() {
                 <input type="email" placeholder="Email" onChange={e => setFormData({...formData, email: e.target.value})} />
                 <input type="text" placeholder="First Name" onChange={e => setFormData({...formData, first_name: e.target.value})} />
                 <input type="text" placeholder="Last Name" onChange={e => setFormData({...formData, last_name: e.target.value})} />
-                <input type="text" placeholder="Role" onChange={e => setFormData({...formData, role: e.target.value})} />
+                <select placeholder="Role" onChange={e => setFormData({...formData, role: e.target.value})}>
+                    <option value="">Select a Role</option>
+                    <option value="WORKER">WORKER</option>
+                    <option value="CUSTOMER">CLIENT</option>
+                </select>
                 <input type="password" placeholder="Password" onChange={e => setFormData({...formData, password: e.target.value})} />
                 <button type="submit">Register</button>
             </form>

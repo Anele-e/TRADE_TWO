@@ -12,19 +12,7 @@ class User(BaseModel):
     last_name: str
     role: str
 
-    # model_config = ConfigDict(
-    #     form_attributes=True,
-    #     json_schema_extra = {
-    #         "example": {
-    #             "id": 1,
-    #             "username": "johndoe",
-    #             "email": "johndoe@example.com",
-    #             "first_name": "John",
-    #             "last_name": "Doe",
-    #             "role": "worker"
-    #         }
-    #     }
-    # )
+
 
 class UserPrivate(User):
     hashed_password: str

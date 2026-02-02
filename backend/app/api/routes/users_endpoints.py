@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from app.crud_ops.users import get_user_by_id, create_user, update_user, get_users_by_role
 from app.api.deps import get_current_user
-from app.schemas.users import User, UserUpdate
+from app.schemas.users_schema import User, UserUpdate
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.deps import get_db
 
@@ -37,8 +37,10 @@ async def update_user_endpoint(
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
-
-
-
-
-
+@router.post("/", status_code=status.HTTP_201_CREATED)
+async def create_user_endpoint(
+    user_create: User,
+    db: AsyncSession = Depends(get_db)
+):
+    new_user = await create_user(db, user_create)
+    return new_user

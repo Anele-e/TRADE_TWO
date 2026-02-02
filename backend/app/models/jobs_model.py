@@ -22,6 +22,10 @@ class Job(Base):
     customer_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     worker_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
     status: Mapped[JobStatus] = mapped_column(Enum(JobStatus, name="job_status_enum"), default=JobStatus.OPEN, nullable=False)
+    price: Mapped[float | None] = mapped_column(nullable=True)
     created_at: Mapped[datetime] = mapped_column(nullable=False)
     updated_at: Mapped[datetime] = mapped_column(nullable=False)
+    latitude: Mapped[float | None] = mapped_column(nullable=True)
+    longitude: Mapped[float | None] = mapped_column(nullable=True)
+    location_address: Mapped[str | None] = mapped_column(nullable=True)
     

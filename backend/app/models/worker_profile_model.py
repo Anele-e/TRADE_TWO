@@ -6,15 +6,19 @@ from datetime import datetime
 from . import Base
 
 
-class ClientProfile(Base):
-    __tablename__ = "client_profiles"
+class WorkerProfile(Base):
+    __tablename__ = "worker_profiles"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), unique=True, nullable=False)
-    address: Mapped[str] = mapped_column(nullable=True)
-    phone_number: Mapped[str] = mapped_column(nullable=True)
+    bio: Mapped[str] = mapped_column(nullable=True)
+    latitude: Mapped[float | None] = mapped_column(nullable=True)
+    longitude: Mapped[float | None] = mapped_column(nullable=True)
+    skills: Mapped[str] = mapped_column(nullable=True)
+    rating: Mapped[float] = mapped_column(nullable=True)
     created_at: Mapped[datetime] = mapped_column(nullable=False)
     updated_at: Mapped[datetime] = mapped_column(nullable=False)
-
     def __repr__(self) -> str:
-        return f"<ClientProfile(id={self.id}, user_id={self.user_id})>"
+        return f"<WorkerProfile(id={self.id}, user_id={self.user_id}, rating={self.rating})>"
+
+   
