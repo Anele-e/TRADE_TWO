@@ -3,9 +3,10 @@ from sqlalchemy import select
 from app.models.jobs_model import Job, JobStatus
 from app.schemas.jobs_schema import JobCreate, JobUpdate
 from datetime import datetime
+import math
 
-async def get_job_by_id(db: AsyncSession, job_id: int) -> Job | None:
-    result = await db.execute(select(Job).where(Job.id == job_id))
+async def get_job_by_id(db: AsyncSession, job_id: int, user_id: int) -> Job | None:
+    result = await db.execute(select(Job).where(Job.id == job_id, Job.customer_id == user_id))
     return result.scalars().first()
 
 async def create_job(db: AsyncSession, job_create: JobCreate, current_user_id: int) -> Job:
@@ -28,8 +29,8 @@ async def create_job(db: AsyncSession, job_create: JobCreate, current_user_id: i
     await db.refresh(new_job)
     return new_job
 
-async def update_job(db: AsyncSession, job_id: int, job_update: JobUpdate) -> Job | None:
-    job = await get_job_by_id(db, job_id)
+async def update_job(db: AsyncSession, job_id: int, job_update: JobUpdate, user_id: int) -> Job | None:
+    job = await get_job_by_id(db, job_id, user_id)
     if not job:
         return None
 
@@ -40,3 +41,12 @@ async def update_job(db: AsyncSession, job_id: int, job_update: JobUpdate) -> Jo
     await db.commit()
     await db.refresh(job)
     return job
+
+async def get_nearby_jobs(lat: float, lon: float, radius_km: int, db: AsyncSession, user_id: int):
+    deg_lat = radius_km / 111.0
+    deg_lon = radius_km / (111.0 * abs(math.cos(math.radians(lat))))
+    min_lat, max_lat = lat - deg_lat, lat + deg_lat
+    min_lon, max_lon = lon - deg_lon, lon + deg_lon
+    
+    jobs = await db.execute(select(Job).where(Job.status == JobStatus.OPEN, Job.latitude.between(min_lat, max_lat), Job.longitude.between(min_lon, max_lon), Job.customer_id != user_id))
+    return jobs

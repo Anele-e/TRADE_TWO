@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { createJobRequest} from '../api/apiCalls';
 
+
+const LOCATION_KEY = import.meta.env.VITE_LOCATION_KEY;
+
 export default function CreateJobRequest({ onClose }) {
     const [formData, setFormData] = useState({
         title: '',
@@ -15,12 +18,28 @@ export default function CreateJobRequest({ onClose }) {
     const [suggestions, setSuggestions] = useState([]);
 
     const searchAddress = async (query) => {
+        console.log('searchAddress called with:', query);
         if(query.length < 3) return;
 
-        const res = await fetch(`https://api.locationiq.com/v1/autocomplete?key=${LOCATION_KEY}&q=${query}`);
-        const data = await res.json();
-        setSuggestions(data);
+        try {
+            const res = await fetch(`https://api.locationiq.com/v1/autocomplete?key=${LOCATION_KEY}&q=${encodeURIComponent(query)}`);
+        
+            const data = await res.json();
+            setSuggestions(data);
+        } catch (err) {
+            console.error('Location search failed', err);
+        }
     }
+
+    const selectSuggestion = (item) => {
+        setFormData(prev => ({
+            ...prev,
+            location_address: item.display_name,
+            latitude: parseFloat(item.lat),
+            longitude: parseFloat(item.lon)
+        }));
+        setSuggestions([]);
+    };
 
 
     
@@ -28,6 +47,10 @@ export default function CreateJobRequest({ onClose }) {
     const handleChange = (e) => {
         const {name, value} = e.target;
         setFormData(prev=> ({...prev, [name]: value}));
+
+        if (name === 'location_address') {
+            searchAddress(value);
+        }
     }
 
 
@@ -42,7 +65,8 @@ export default function CreateJobRequest({ onClose }) {
             const payload = {
                 title: formData.title,
                 description: formData.description,
-                price: formData.price,
+                worker_id: null,
+                price: parseFloat(formData.price),
                 location_address: formData.location_address,
                 latitude: formData.latitude,
                 longitude: formData.longitude
@@ -54,13 +78,6 @@ export default function CreateJobRequest({ onClose }) {
             console.error(error)
         }
         finally {
-            // Reset form or provide success feedback as needed
-            setFormData({
-                title: '',
-                description: '',
-                price: '',
-                location_address: ''
-            });
             setLoading(false);
         }
     };
@@ -99,12 +116,18 @@ export default function CreateJobRequest({ onClose }) {
                                 name='location_address'
                                 placeholder='657 Main Ro...'
                                 value={formData.location_address}
-                                onChange={(e) => {
-                                    setFormData({...prev, location_address: e.target.value});
-                                    searchAddress(e.target.value);
-                                    }}
+                                onChange={handleChange}
                                     required
                                      />
+                                {suggestions.length > 0 && (
+                                    <ul className='suggestions'>
+                                        {suggestions.map((item, index) => (
+                                            <li key={index} onClick={() => selectSuggestion(item)}>
+                                                {item.display_name}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
                             {formData.latitude && <small style={{color: 'green'}}>✓ Location Locked</small>}
                         </div>
                     </div>

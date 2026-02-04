@@ -26,6 +26,7 @@ class JobCreate(BaseModel):
     longitude: float | None
     location_address: str | None
 
+
 class JobUpdate(BaseModel):
     title: str | None
     description: str | None

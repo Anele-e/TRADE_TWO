@@ -3,6 +3,7 @@ from sqlalchemy.types import DateTime
 from sqlalchemy import Enum, ForeignKey
 from enum import Enum as PyEnum
 from datetime import datetime
+from typing import Optional
 
 from . import Base
 
