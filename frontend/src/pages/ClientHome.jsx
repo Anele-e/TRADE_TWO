@@ -2,10 +2,16 @@ import NavBar from "../components/NavBar";
 import { useEffect, useState, useCallback } from "react";
 // import AvailableWorkers from "../components/AvailableWorkers";
 import CreateJobRequest from "../components/CreateJobRequest";
+import CardGrid from "../components/CardGrid";
+import WorkerCard from "../components/WorkerCard";
 
 
 export default function ClientHome({ user }) {
     const [showForm, setShowForm] = useState(false);
+    const avilableWorkersSample = [
+        {},
+        {}
+    ]
 
     function handleClick() {
         setShowForm(true);
@@ -21,6 +27,10 @@ export default function ClientHome({ user }) {
                 <button onClick={handleClick}>(+)</button>
                 {showForm && <CreateJobRequest onClose={() => setShowForm(false)} />}
                 {/* Show available workers here */}
+                <CardGrid items={avilableWorkersSample} renderCard={(worker) => (
+                    <WorkerCard key={worker.id} worker={worker} />
+                )}
+                />
                          
             </div>
         </>

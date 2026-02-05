@@ -1,12 +1,10 @@
-import ProfileCard from "./ProfileCard";
+// import ProfileCard from "./ProfileCard";
 // import ClientCard from "./ClientCard"
 
-export default function CardGrid({ cards }) {
+export default function CardGrid({ items, renderCard }) {
     return(
         <section className="card-grid">
-            {cards.map((card, index) => (
-                <ProfileCard key={index} {...card} />
-            ))}
+            {items.map((item) => renderCard(item))}
         </section>
     );
 }

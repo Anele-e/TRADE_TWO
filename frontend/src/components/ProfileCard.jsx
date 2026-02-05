@@ -10,15 +10,3 @@ export default function ProfileCard( {user} ) {
     </div>
   );
 }
-
-// const WCard = ({ worker }) => {
-//   return (
-//     <div className="worker-card">
-//       <h3>{worker.first_name} {worker.last_name}</h3>
-//       <p>Username: {worker.username}</p>
-//       <p>Email: {worker.email}</p>
-//     </div>
-//   );
-// };
-
-// export default WorkerCard;

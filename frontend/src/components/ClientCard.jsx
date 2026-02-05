@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 
 
-export default function ClientCard() {
+export default function ClientCard({ client }) {
     return (
         <div className='job-card'>
             <div className='job-card-header'>
                 <img src="" alt='client-img'
                         className='avatar' />
                 <div className='job-card-body'>
-                    <h3>Client Name</h3>
+                    <h3>Client Name: {client.username}</h3>
                     <p>Location here</p>
                     <p>Contact Info</p>
                     <p>Additional Details</p>
