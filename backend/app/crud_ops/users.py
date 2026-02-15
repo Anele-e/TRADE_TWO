@@ -19,8 +19,8 @@ async def create_user(db: AsyncSession, user_create: UserCreate) -> UserModel:
         hashed_password=hash_password(user_create.password)
     )
     db.add(new_user)
-    await db.commit()
-    await db.refresh(new_user)
+    # await db.commit()
+    # await db.refresh(new_user)
     return new_user
 
 

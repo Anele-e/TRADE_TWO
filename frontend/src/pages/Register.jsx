@@ -12,12 +12,20 @@ export default function Register() {
     const handleClick = async (e) => {
         e.preventDefault();
         try {
+            console.log("A. Registering with formData:", formData);
             const response = await register(formData);
+            console.log("B. Registration response in component:", response)
+            console.log("C. User from response:", response.user);
+            console.log("D. Role:", response.user.role);
+            console.log("E. has_selected_skills:", response.user.has_selected_skills);
+
             if (response.user.role === "WORKER" && !response.user.has_selected_skills) {
+                console.log("F. Navigating to /skills");
                 navigate("/skills");
                 return;
             }else {
-            navigate("/");
+                console.log("G. Navigating to /");
+                navigate("/");
             }
         }
         catch (err) {

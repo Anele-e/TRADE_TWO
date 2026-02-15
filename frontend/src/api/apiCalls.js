@@ -6,6 +6,14 @@ export const createJobRequest = async (jobData) => {
 };
 
 export const selectSkills = async (skills) => {
-    const response = await api.put('/users/skills', { skills: skills });
-    return response.data;
+    console.log("Sending skills data:", { skills: skills });
+    try{
+        const response = await api.put('/users/skills', { skills: skills });
+        console.log("Response:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Error details:", error.response?.data);
+        throw error;
+    }
+    
 } 

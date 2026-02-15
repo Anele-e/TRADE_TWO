@@ -27,15 +27,6 @@ export default function WorkerHome( {user}) {
             <div className={styles.homeContainer}>
                 <h1>Welcome, {user.username}!</h1>
 
-                <p>What skills do you have? </p>
-                <div className={styles.skillOptions}>
-                    {options.map(option => (
-                        <button key={option} type="button"
-                        className={`chip ${selected.includes(option) ? "active" : ""}`} onClick={() => toggleOption(option)}>
-                            {option}
-                        </button>
-                    ))}
-                </div>
                 {/* Show worker-specific content here. */}
                 <CardGrid items={clientWithJobsSample} renderCard={(client) => (
                     <ClientCard key={client.id} client={client} />

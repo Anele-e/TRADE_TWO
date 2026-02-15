@@ -5,10 +5,13 @@ import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
 import { useAuth } from './context/AuthContext.jsx'
 import Home from './pages/Home.jsx'
+import SelectSkills from './pages/SelectSkills/SelectSkills.jsx'; 
 // import ForgotPassword from './pages/ForgotPassword.jsx'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
+
+  console.log("ProtectedRoute - user:", user, "loading:", loading);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -24,6 +27,11 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/skills" element={
+          <ProtectedRoute>
+            <SelectSkills />
+          </ProtectedRoute>
+        } />
         <Route path="/" element={
           <ProtectedRoute>
             <Home />

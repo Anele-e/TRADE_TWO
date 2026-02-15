@@ -18,10 +18,18 @@ export const AuthProvider = ({ children }) => {
     }
 
     const register = async ({ username, email, first_name, last_name, role, password }) => {
+        console.log("1. Starting registration with data:", { username, email, first_name, last_name, role });
+
         const data = await registerApi({ username, email, first_name, last_name, role, password });
+
+        console.log("2. Registration response:", data);
+
         setToken(data.token);
         localStorage.setItem("token", data.token);
         // const userData = await getMe();
+
+        console.log("3. Setting user with data from registration:", data.user);
+
         setUser(data.user);
         return data
     }

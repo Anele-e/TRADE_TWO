@@ -23,6 +23,8 @@ export default function NavBar() {
     const toggleMenu = () => setIsOpen(prev => !prev);
     const closeMenu = () => setIsOpen(false);
 
+    const onLogOut = () => localStorage.removeItem("token"); 
+
     return (
         <>
         <nav className={`${styles.navbar} ${isScrolled ? styles.navbarScrolled : ""}`}>
@@ -44,7 +46,7 @@ export default function NavBar() {
                         <li><a href="/help">Help</a></li>
                         <li><a href="/contact">Contact</a></li>
                         <li>
-                            <a href="/logout">
+                            <a href="/logout" onClick={onLogOut}>
                                 Logout
                             </a>
                         </li>

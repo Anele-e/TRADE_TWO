@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { selectSkills } from '../api/apiCalls';
+import { selectSkills } from "../../api/apiCalls";
+import styles from "./SelectSkills.module.css";
 
 const options = [
   "Plumbing",
@@ -14,6 +15,12 @@ const options = [
 ];
 
 export default function SelectSkills() {
+  console.log("SelectSkills component rendered");
+
+  useEffect(() => {
+    console.log("SelectSkills mounted");
+  }, [])
+
   const [selected, setSelected] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
@@ -40,8 +47,8 @@ export default function SelectSkills() {
   };
 
   return (
-    <div className={skillsPrompt}>
-      <div className={skillsHeader}>
+    <div className={styles.skillsPrompt}>
+      <div className={styles.skillsHeader}>
         <p>What skills do you have?</p>
         <button onClick={() => setIsOpen(prev => !prev)}>
           {isOpen ? "−" : "+"}
@@ -49,7 +56,7 @@ export default function SelectSkills() {
       </div>
 
       {isOpen && (
-        <div className={skillOptions}>
+        <div className={styles.skillOptions}>
           {options.map(option => (
             <button
               key={option}

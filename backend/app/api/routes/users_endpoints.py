@@ -22,6 +22,17 @@ async def get_user_endpoint(user_id: int, db: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return user
 
+@router.put("/skills")
+async def save_user_skills(skills_data: SkillsUpdate, current_user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
+    worker_profile_update = WorkerProfileBase(skills=skills_data.skills, has_selected_skills=True)
+    updated_profile = await update_worker_profile(db, current_user.id, worker_profile_update)
+
+    if not updated_profile:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Worker profile not found")
+    
+
+    return updated_profile
+
 @router.put("/{user_id}", status_code=status.HTTP_200_OK)
 async def update_user_endpoint(
     user_id: int,
@@ -44,16 +55,7 @@ async def create_user_endpoint(
     new_user = await create_user(db, user_create)
     return new_user
 
-@router.put("/skills")
-async def save_user_skills(skills_data: SkillsUpdate, current_user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
-    worker_profile_update = WorkerProfileBase(skills=skills_data.skills, has_selected_skills=True)
-    updated_profile = await update_worker_profile(db, current_user.id, worker_profile_update)
 
-    if not updated_profile:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Worker profile not found")
-    
-
-    return updated_profile
 
 @router.put("/worker_profile/{user_id}")
 async def update_worker_profile_endpoint(user_id: int, worker_profile_update: WorkerProfileBase, current_user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):

@@ -35,12 +35,22 @@ async def register_user(user_create: UserCreate, db: AsyncSession = Depends(get_
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="This User already exists",
         )
-    new_user = await create_user(db, user_create)
-    has_selected = False
-    if user_create.role == "WORKER":
-        worker_profile_create = WorkerProfileCreate(user_id=new_user.id, has_selected_skills=False)
-        worker_profile = await create_worker_profile(db, worker_profile_create)
-        has_selected = worker_profile.has_selected_skills
+    try:
+        new_user = await create_user(db, user_create)
+        await db.flush()
+        has_selected = False
+        if user_create.role == "WORKER":
+            worker_profile_create = WorkerProfileCreate(user_id=new_user.id, has_selected_skills=False)
+            worker_profile = await create_worker_profile(db, worker_profile_create)
+            has_selected = worker_profile.has_selected_skills
+
+        await db.commit()
+        await db.refresh(new_user)
+
+    except Exception as e:
+        await db.rollback()
+        raise e
+    
     token = create_access_token(subject=str(new_user.id))
     return {
         "token": token,
@@ -52,3 +62,7 @@ async def register_user(user_create: UserCreate, db: AsyncSession = Depends(get_
             "has_selected_skills": has_selected
         }
     }
+
+@router.get("/logout")
+async def logout():
+    return {"message":"Successfully logged out"}

@@ -25,11 +25,14 @@ def upgrade() -> None:
     op.alter_column('worker_profiles', 'created_at',
                existing_type=postgresql.TIMESTAMP(),
                type_=sa.DateTime(timezone=True),
-               existing_nullable=False)
+               existing_nullable=False,
+               server_default=sa.text('now()'))
+            
     op.alter_column('worker_profiles', 'updated_at',
                existing_type=postgresql.TIMESTAMP(),
                type_=sa.DateTime(timezone=True),
-               existing_nullable=False)
+               existing_nullable=False,
+               server_default=sa.text('now()'))
     # ### end Alembic commands ###
 
 

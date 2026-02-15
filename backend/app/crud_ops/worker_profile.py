@@ -8,8 +8,8 @@ from sqlalchemy import select
 async def create_worker_profile(db: AsyncSession, worker_profile_create: WorkerProfileCreate) -> WorkerProfile:
     new_profile = WorkerProfile(**worker_profile_create.model_dump())
     db.add(new_profile)
-    await db.commit()
-    await db.refresh(new_profile)
+    # await db.commit()
+    # await db.refresh(new_profile)
     return new_profile
 
 async def get_worker_profile_by_id(
