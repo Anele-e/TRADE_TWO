@@ -3,9 +3,10 @@ from fastapi import APIRouter, HTTPException, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.deps import get_current_user, get_db
 from app.crud_ops.users import get_user_by_id, create_user
-from app.schemas.users_schema import UserLogin, UserCreate
+from app.schemas.users_schema import UserLogin, UserCreate, WorkerProfileCreate
 from app.core.security import verify_password, create_access_token
 from app.models.users_model import User
+from app.crud_ops.worker_profile import create_worker_profile
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -35,5 +36,19 @@ async def register_user(user_create: UserCreate, db: AsyncSession = Depends(get_
             detail="This User already exists",
         )
     new_user = await create_user(db, user_create)
+    has_selected = False
+    if user_create.role == "WORKER":
+        worker_profile_create = WorkerProfileCreate(user_id=new_user.id, has_selected_skills=False)
+        worker_profile = await create_worker_profile(db, worker_profile_create)
+        has_selected = worker_profile.has_selected_skills
     token = create_access_token(subject=str(new_user.id))
-    return {"token": token, "token_type": "bearer"}
+    return {
+        "token": token,
+        "token_type": "bearer",
+        "user": {
+            "id": new_user.id,
+            "username": new_user.username,
+            "role": new_user.role,
+            "has_selected_skills": has_selected
+        }
+    }

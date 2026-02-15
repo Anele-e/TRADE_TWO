@@ -1,7 +1,7 @@
 import { useAuth } from "../context/AuthContext";
-import NavBar from "../components/NavBar";
-import WorkerHome from "./WorkerHome";
-import ClientHome from "./ClientHome";
+import NavBar from "../components/NavBar/NavBar";
+import WorkerHome from "./WorkerHome/WorkerHome";
+import ClientHome from "./ClientHome/ClientHome";
 import { Navigate } from "react-router-dom";
 
 export default function Home() {

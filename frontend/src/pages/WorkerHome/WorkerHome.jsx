@@ -1,7 +1,8 @@
-import NavBar from "../components/NavBar";
-import CardGrid from "../components/CardGrid";
-import ClientCard from "../components/ClientCard";
+import NavBar from "../../components/NavBar/NavBar";
+import CardGrid from "../../components/CardGrid";
+import ClientCard from "../../components/ClientCard";
 import { useState } from "react";
+import styles from "./Worker.module.css";
 
 export default function WorkerHome( {user}) {
     const [selected, setSelected] = useState([]);
@@ -23,11 +24,11 @@ export default function WorkerHome( {user}) {
     return (
         <>
             <NavBar />
-            <div className="home-container">
+            <div className={styles.homeContainer}>
                 <h1>Welcome, {user.username}!</h1>
 
                 <p>What skills do you have? </p>
-                <div className="skill-options">
+                <div className={styles.skillOptions}>
                     {options.map(option => (
                         <button key={option} type="button"
                         className={`chip ${selected.includes(option) ? "active" : ""}`} onClick={() => toggleOption(option)}>

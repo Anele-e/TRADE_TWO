@@ -1,0 +1,15 @@
+:root {
+    --transform-fast: 0.3s ease;
+    
+    --our-sort-of-blue: #007bff;
+    
+    --black-text: #000000;
+    --white-text: #ffffff;
+    
+    --my-font: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.homeContainer {
+    padding-top: 3rem;
+    
+}

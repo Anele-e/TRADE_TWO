@@ -21,8 +21,9 @@ export const AuthProvider = ({ children }) => {
         const data = await registerApi({ username, email, first_name, last_name, role, password });
         setToken(data.token);
         localStorage.setItem("token", data.token);
-        const userData = await getMe();
-        setUser(userData);
+        // const userData = await getMe();
+        setUser(data.user);
+        return data
     }
 
     const logout = () => {

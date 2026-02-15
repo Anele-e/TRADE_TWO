@@ -1,9 +1,9 @@
-import NavBar from "../components/NavBar";
+import NavBar from "../../components/NavBar/NavBar";
 import { useEffect, useState, useCallback } from "react";
 // import AvailableWorkers from "../components/AvailableWorkers";
-import CreateJobRequest from "../components/CreateJobRequest";
-import CardGrid from "../components/CardGrid";
-import WorkerCard from "../components/WorkerCard";
+import CreateJobRequest from "../../components/CreateJobRequest";
+import CardGrid from "../../components/CardGrid";
+import WorkerCard from "../../components/WorkerCard";
 
 
 export default function ClientHome({ user }) {
