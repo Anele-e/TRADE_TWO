@@ -17,3 +17,13 @@ export const selectSkills = async (skills) => {
     }
     
 } 
+
+export const getOpenJobs = async () => {
+    const response = await api.get('/jobs/open');
+    return response.data;
+}
+
+export const getCloseWorkers  = async () => {
+    const response = await api.get('/workers/');
+    return response.data;
+}

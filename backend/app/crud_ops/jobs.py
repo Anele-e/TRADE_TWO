@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from app.models.jobs_model import Job, JobStatus
 from app.schemas.jobs_schema import JobCreate, JobUpdate
 from datetime import datetime
@@ -41,6 +42,16 @@ async def update_job(db: AsyncSession, job_id: int, job_update: JobUpdate, user_
     await db.commit()
     await db.refresh(job)
     return job
+
+async def get_opened_jobs(db: AsyncSession, user_id: int):
+    result = await db.execute(
+        select(Job).options(selectinload(Job.customer))
+        .where(
+            Job.status == JobStatus.OPEN, Job.customer_id != user_id).order_by(
+                Job.created_at.desc())
+        )
+    jobs = result.scalars().all()
+    return jobs
 
 async def get_nearby_jobs(lat: float, lon: float, radius_km: int, db: AsyncSession, user_id: int):
     deg_lat = radius_km / 111.0

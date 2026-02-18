@@ -122,10 +122,7 @@ textarea {
   font-family: var(--my-font);
 }
 
-.home-container {
-  min-height: 500px;
-  padding: 20px;
-}
+
 
 /* options for skills css */
 .skill-options {

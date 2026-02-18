@@ -1,0 +1,37 @@
+:root {
+    --section-padding: 6rem;
+    --transision-fast: 0.25s ease;
+    --background: #ffffff;
+
+    --our-sort-of-blue: #007bff;
+    --my-font: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.homeContainer {
+  min-height: 500px;
+  padding: 20px;
+}
+
+.homeContainer h1 {
+    /* font-weight: 900;
+    font-size: 1rem; */
+    color: var(--our-sort-of-blue);
+    /* margin: 0; */
+    font-family: var(--my-font);
+}
+
+.buttonP {
+    /* display: grid;
+    grid-template-columns: 1fr 1fr; */
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    justify-content: center;
+}
+
+.postPara {
+    font-size: 2rem;
+    font-family: var(--my-font);
+
+}

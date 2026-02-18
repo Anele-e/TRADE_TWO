@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { createJobRequest} from '../api/apiCalls';
+import { createJobRequest} from '../../api/apiCalls';
 
 
 const LOCATION_KEY = import.meta.env.VITE_LOCATION_KEY;
@@ -86,7 +86,7 @@ export default function CreateJobRequest({ onClose }) {
         <div className="modal">
             <div className="modal-content">
                 <span className="close" onClick={onClose}>&times;</span>
-                <h2>Create Job Request</h2>
+                <h2>Post Job Request here!</h2>
                 {error && <p className="error-message">{error}</p>}
                 <form onSubmit={handleSubmit}>
                     <input

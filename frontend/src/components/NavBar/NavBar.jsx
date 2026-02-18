@@ -43,8 +43,8 @@ export default function NavBar() {
                                 Profile
                             </a>
                         </li>
-                        <li><a href="/help">Help</a></li>
-                        <li><a href="/contact">Contact</a></li>
+                        <li><a href="/help">My Jobs</a></li>
+                        <li><a href="/contact">Messages</a></li>
                         <li>
                             <a href="/logout" onClick={onLogOut}>
                                 Logout

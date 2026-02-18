@@ -12,4 +12,26 @@
 .homeContainer {
     padding-top: 3rem;
     
+    
+}
+
+.title {
+    color: var(--our-sort-of-blue);
+    transition: all var(--transform-fast);
+    font-family: var(--my-font);
+}
+
+.smallP {
+    font-size: large;
+    font-family: var(--my-font);
+}
+
+.subTitle {
+    text-align: start;
+    color: var(--our-sort-of-blue);
+    font-family: var(--my-font);
+}
+
+.cardDiv {
+    padding-top: 2.4rem;
 }

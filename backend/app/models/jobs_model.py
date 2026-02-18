@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import DateTime
 from sqlalchemy import Enum, ForeignKey
 from enum import Enum as PyEnum
@@ -29,4 +29,16 @@ class Job(Base):
     latitude: Mapped[float | None] = mapped_column(nullable=True)
     longitude: Mapped[float | None] = mapped_column(nullable=True)
     location_address: Mapped[str | None] = mapped_column(nullable=True)
+
+    customer = relationship(
+        "User",
+        foreign_keys=[customer_id],
+        back_populates="customer_jobs"
+    )
+
+    worker = relationship(
+        "User",
+        foreign_keys=[worker_id],
+        back_populates="worker_jobs"
+    )
     

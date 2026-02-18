@@ -6,9 +6,9 @@ from app.api.deps import get_db
 from app.crud_ops.worker_profile import update_worker_profile, get_worker_profile_by_user_id,  create_worker_profile, get_all_worker_profiles
 
 
-router = APIRouter(prefix="/worker", tags=["worker"])
+router = APIRouter(prefix="/workers", tags=["worker"])
 
-@router.get("/workers")
+@router.get("/")
 async def get_workers(db: AsyncSession = Depends(get_db)):
     worker_profiles = await get_all_worker_profiles(db)
     return worker_profiles
