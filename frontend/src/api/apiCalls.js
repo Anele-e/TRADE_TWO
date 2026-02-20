@@ -27,3 +27,8 @@ export const getCloseWorkers  = async () => {
     const response = await api.get('/workers/');
     return response.data;
 }
+
+export const getWorkersInfo = async (id) => {
+    const response = await api.get(`/users/${id}`);
+    return response.data;
+}

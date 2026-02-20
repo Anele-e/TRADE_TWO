@@ -2,7 +2,7 @@ import NavBar from "../../components/NavBar/NavBar";
 import { useEffect, useState, useCallback } from "react";
 import CreateJobRequest from "../../components/CreateJob/CreateJobRequest";
 import CardGrid from "../../components/CardGrid";
-import WorkerCard from "../../components/WorkerCard";
+import WorkerCard from "../../components/WorkerCard/WorkerCard";
 import styles from "./ClientHome.module.css";
 import { getCloseWorkers } from "../../api/apiCalls";
 
