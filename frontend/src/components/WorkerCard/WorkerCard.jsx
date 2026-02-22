@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styles from "./WorkerCard.module.css"
 import { getWorkersInfo } from "../../api/apiCalls";
 
@@ -8,12 +8,48 @@ export default function WorkerCard({ worker }) {
     const [error, setError] = useState(null);
     const [userData, setUserData] = useState(null);
 
-    const parsedSkills =
-    typeof worker.skills === "string"
-        ? worker.skills
-            .replace(/[{}"]/g, "")
-            .split(",")
-        : worker.skills;
+    const parsedSkills = useMemo(() => {
+        if (!worker.skills) return [];
+
+        let skills = worker.skills;
+
+        if (Array.isArray(skills) && skills[0] === '{') {
+            skills = skills.join('');
+        }
+
+        if (typeof skills !== "string") return [];
+
+        const inner = skills.slice(1, -1);
+        if (!inner) return [];
+
+        const result = [];
+        let current = "";
+        let inQuotes = false;
+
+        for (const ch of inner) {
+            if (ch === '"') {
+                inQuotes = !inQuotes;
+            } else if (ch === "," && !inQuotes) {
+                result.push(current.trim());
+                current = "";
+            } else {
+                current += ch;
+            }
+        }
+        if (current.trim()) result.push(current.trim());
+        return result;
+
+        // if (Array.isArray(worker.skills)) return worker.skills;
+
+        // if (typeof worker.skills === "string") {
+        //     return worker.skills
+        //     .replace(/[{}]/g, '')
+        //     .split(',')
+        //     .map(s => s.trim().replace(/^"|"$/g, ''))
+        //     .filter(s => s != "");
+        // }
+        // return []
+    }, [worker.skills])
 
     console.log(parsedSkills);
 

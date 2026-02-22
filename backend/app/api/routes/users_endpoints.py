@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from app.crud_ops.users import get_user_by_id, create_user, update_user, get_users_by_role
 from app.api.deps import get_current_user
-from app.schemas.users_schema import User, UserUpdate, WorkerProfileBase
+from app.schemas.users_schema import User, UserUpdate, WorkerProfileBase, WorkerProfileUpdate, SkillsUpdate, WorkerProfileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.deps import get_db
 from app.crud_ops.worker_profile import update_worker_profile
-from app.schemas.users_schema import SkillsUpdate
+
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -22,9 +22,9 @@ async def get_user_endpoint(user_id: int, db: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return user
 
-@router.put("/skills")
+@router.put("/skills", response_model=WorkerProfileResponse)
 async def save_user_skills(skills_data: SkillsUpdate, current_user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
-    worker_profile_update = WorkerProfileBase(skills=skills_data.skills, has_selected_skills=True)
+    worker_profile_update = WorkerProfileUpdate(skills=skills_data.skills, has_selected_skills=True)
     updated_profile = await update_worker_profile(db, current_user.id, worker_profile_update)
 
     if not updated_profile:

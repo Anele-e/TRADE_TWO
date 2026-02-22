@@ -76,3 +76,8 @@ class WorkerProfileRead(WorkerProfileBase):
 
 class SkillsUpdate(BaseModel):
     skills: list[str]
+
+class WorkerProfileResponse(WorkerProfileBase):
+    id: int
+    user_id: int
+    rating: float | None = None
