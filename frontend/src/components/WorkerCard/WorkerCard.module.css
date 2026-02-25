@@ -1,6 +1,7 @@
 .card {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
     gap: 1.5rem;
     padding: 2rem;
     background-color: aliceblue;
@@ -9,7 +10,9 @@
     width: 320px;
 
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    overflow: hidden;
 }
 
 .card:hover {

@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 from app.crud_ops.users import get_user_by_id, create_user, update_user, get_users_by_role
 from app.api.deps import get_current_user
 from app.schemas.users_schema import User, UserUpdate, WorkerProfileBase, WorkerProfileUpdate, SkillsUpdate, WorkerProfileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.deps import get_db
 from app.crud_ops.worker_profile import update_worker_profile
+from app.utils.file_handler import save_upload_file 
 
 
 router = APIRouter(prefix="/users", tags=["users"])
@@ -68,3 +69,18 @@ async def update_worker_profile_endpoint(user_id: int, worker_profile_update: Wo
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Worker profile not found")
 
     return updated_profile
+
+@router.post("/upload-profile-img")
+async def image_upload(file: UploadFile = File(...), db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
+    if file.content_type not in ["image/jpeg", "image/png"]:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Only jpg and png allowed")
+    image_url = save_upload_file(file)
+
+    user = await get_user_by_id(db, current_user.id)
+    user.profile_image_url = image_url
+
+    db.add(user)
+    await db.commit()
+    await db.refresh(user)
+
+    return {"url": image_url}

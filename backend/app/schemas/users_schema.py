@@ -11,6 +11,7 @@ class User(BaseModel):
     email: str
     first_name: str
     last_name: str
+    profile_image_url: str
     role: str
 
 
@@ -35,6 +36,7 @@ class UserUpdate(BaseModel):
     email: str | None = None
     first_name: str | None = None
     last_name: str | None = None
+    profile_image_url: str | None = None
     role: str | None = None
     password: str | None = None
     

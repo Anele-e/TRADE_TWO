@@ -30,6 +30,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(unique=True, index=True, nullable=False)
     first_name: Mapped[str] = mapped_column(nullable=False)
     last_name: Mapped[str] = mapped_column(nullable=False)
+    profile_image_url: Mapped[str] = mapped_column(nullable=True)
     role: Mapped[UserRole] = mapped_column(Enum(UserRole, name="user_role_enum"), nullable=False)
     hashed_password: Mapped[str] = mapped_column(nullable=False)
 

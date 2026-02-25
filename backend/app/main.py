@@ -5,11 +5,16 @@ from app.api.routes import auth
 from app.api.routes import jobs_endpoints
 from app.api.routes import worker_endpoints
 from fastapi.middleware.cors import CORSMiddleware
-
+import os
+from fastapi.staticfiles import StaticFiles
 
 
 settings = get_settings()
 app = FastAPI(title=settings.APP_NAME, debug=settings.DEBUG)
+
+UPLOAD_DIR = os.getenv("UPLOAD_DIR")
+if UPLOAD_DIR:
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 app.add_middleware(
     CORSMiddleware,
@@ -18,6 +23,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 app.include_router(auth.router)
 app.include_router(users_endpoints.router)
