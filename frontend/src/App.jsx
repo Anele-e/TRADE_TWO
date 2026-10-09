@@ -19,13 +19,12 @@ const DEFAULT_TRADE_SKILLS = [
 ]
 
 const AREA_OPTIONS = [
-  { key: 'johannesburg', name: 'Johannesburg CBD', latitude: -26.2041, longitude: 28.0473 },
-  { key: 'sandton', name: 'Sandton', latitude: -26.1076, longitude: 28.0567 },
-  { key: 'randburg', name: 'Randburg', latitude: -26.0936, longitude: 28.0064 },
-  { key: 'soweto', name: 'Soweto', latitude: -26.2485, longitude: 27.854 },
-  { key: 'pretoria', name: 'Pretoria', latitude: -25.7479, longitude: 28.2293 },
-  { key: 'cape-town', name: 'Cape Town', latitude: -33.9249, longitude: 18.4241 },
-  { key: 'durban', name: 'Durban', latitude: -29.8587, longitude: 31.0218 },
+  { key: 'kayamandi', name: 'Kayamandi, Stellenbosch', latitude: -33.9218, longitude: 18.8513 },
+  { key: 'cloetesville', name: 'Cloetesville, Stellenbosch', latitude: -33.9158, longitude: 18.8598 },
+  { key: 'idash-valley', name: 'Idas Valley, Stellenbosch', latitude: -33.9251, longitude: 18.8648 },
+  { key: 'mbekweni', name: 'Mbekweni, Paarl', latitude: -33.7069, longitude: 18.9915 },
+  { key: 'paarl-east', name: 'Paarl East', latitude: -33.7321, longitude: 18.9957 },
+  { key: 'newton', name: 'Newton, Wellington', latitude: -33.6506, longitude: 19.0062 },
 ]
 
 const INITIAL_REGISTER_FORM = {
@@ -40,10 +39,22 @@ const INITIAL_REGISTER_FORM = {
   looking_for: '',
 }
 
+const INITIAL_PROFILE_FORM = {
+  email: '',
+  first_name: '',
+  last_name: '',
+  location_name: AREA_OPTIONS[0].name,
+  latitude: AREA_OPTIONS[0].latitude,
+  longitude: AREA_OPTIONS[0].longitude,
+  skills: [],
+  looking_for: '',
+}
+
 function App() {
   const [view, setView] = useState('login')
   const [tradeSkills, setTradeSkills] = useState(DEFAULT_TRADE_SKILLS)
   const [registerForm, setRegisterForm] = useState(INITIAL_REGISTER_FORM)
+  const [profileForm, setProfileForm] = useState(INITIAL_PROFILE_FORM)
   const [loginForm, setLoginForm] = useState({ username: '', password: '' })
   const [selectedLocation, setSelectedLocation] = useState(AREA_OPTIONS[0].key)
   const [selectedSkills, setSelectedSkills] = useState([])
@@ -53,6 +64,7 @@ function App() {
   const [clientSkillFilter, setClientSkillFilter] = useState('')
   const [formError, setFormError] = useState('')
   const [matchStatus, setMatchStatus] = useState('')
+  const [profileStatus, setProfileStatus] = useState('')
   const [isBusy, setIsBusy] = useState(false)
   const [isLocating, setIsLocating] = useState(false)
 
@@ -104,6 +116,11 @@ function App() {
     setRegisterForm((current) => ({ ...current, [name]: value }))
   }
 
+  function updateProfileForm(event) {
+    const { name, value } = event.target
+    setProfileForm((current) => ({ ...current, [name]: value }))
+  }
+
   function updateLoginForm(event) {
     const { name, value } = event.target
     setLoginForm((current) => ({ ...current, [name]: value }))
@@ -117,6 +134,20 @@ function App() {
 
     setSelectedLocation(area.key)
     setRegisterForm((current) => ({
+      ...current,
+      location_name: area.name,
+      latitude: area.latitude,
+      longitude: area.longitude,
+    }))
+  }
+
+  function chooseProfileLocation(event) {
+    const area = AREA_OPTIONS.find((option) => option.name === event.target.value)
+    if (!area) {
+      return
+    }
+
+    setProfileForm((current) => ({
       ...current,
       location_name: area.name,
       latitude: area.latitude,
@@ -156,6 +187,15 @@ function App() {
         ? current.filter((selectedSkill) => selectedSkill !== skill)
         : [...current, skill],
     )
+  }
+
+  function toggleProfileSkill(skill) {
+    setProfileForm((current) => ({
+      ...current,
+      skills: current.skills.includes(skill)
+        ? current.skills.filter((selectedSkill) => selectedSkill !== skill)
+        : [...current.skills, skill],
+    }))
   }
 
   function validateRegisterForm() {
@@ -216,6 +256,7 @@ function App() {
         body: JSON.stringify(payload),
       })
       setSession(data.user)
+      setProfileForm(createProfileForm(data.user))
       setMatches([])
       setClientSkillFilter('')
       setView('dashboard')
@@ -237,6 +278,7 @@ function App() {
         body: JSON.stringify(loginForm),
       })
       setSession(data.user)
+      setProfileForm(createProfileForm(data.user))
       setMatches([])
       setClientSkillFilter('')
       setView('dashboard')
@@ -254,6 +296,53 @@ function App() {
     setView('login')
   }
 
+  function openProfile() {
+    setFormError('')
+    setProfileStatus('')
+    setProfileForm(createProfileForm(session))
+    setView('profile')
+  }
+
+  async function saveProfile(event) {
+    event.preventDefault()
+    setFormError('')
+    setProfileStatus('')
+
+    if (!profileForm.first_name.trim() || !profileForm.last_name.trim() || !profileForm.email.trim()) {
+      setFormError('Complete your name and email before saving.')
+      return
+    }
+
+    if (session.role === 'worker' && profileForm.skills.length === 0) {
+      setFormError('Select at least one trade skill.')
+      return
+    }
+
+    setIsBusy(true)
+    try {
+      const data = await apiRequest(`/users/${session.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          email: profileForm.email,
+          first_name: profileForm.first_name,
+          last_name: profileForm.last_name,
+          location_name: profileForm.location_name,
+          latitude: profileForm.latitude,
+          longitude: profileForm.longitude,
+          skills: session.role === 'worker' ? profileForm.skills : undefined,
+          looking_for: session.role === 'client' ? profileForm.looking_for : undefined,
+        }),
+      })
+      setSession(data.user)
+      setProfileForm(createProfileForm(data.user))
+      setProfileStatus('Profile saved.')
+    } catch (error) {
+      setFormError(error.message)
+    } finally {
+      setIsBusy(false)
+    }
+  }
+
   function applySkillSearch() {
     setClientSkillFilter(skillSearch.trim())
   }
@@ -264,6 +353,7 @@ function App() {
     setSelectedLocation(AREA_OPTIONS[0].key)
     setSelectedSkills([])
     setSkillSearch('')
+    setProfileStatus('')
     setView('register')
   }
 
@@ -275,9 +365,9 @@ function App() {
         </button>
         {session ? (
           <div className="session-actions">
-            <span>
+            <button className="profile-name-button" type="button" onClick={openProfile}>
               {session.first_name} {session.last_name} · {formatRole(session.role)}
-            </span>
+            </button>
             <button className="ghost-button" type="button" onClick={logout}>
               Log out
             </button>
@@ -475,6 +565,98 @@ function App() {
         </section>
       )}
 
+      {view === 'profile' && session && (
+        <form className="form-screen" onSubmit={saveProfile}>
+          <div className="screen-heading">
+            <p className="eyebrow">Profile</p>
+            <h1>Edit profile</h1>
+          </div>
+
+          <div className="form-grid">
+            <label>
+              First name
+              <input
+                name="first_name"
+                value={profileForm.first_name}
+                onChange={updateProfileForm}
+                placeholder="First name"
+              />
+            </label>
+            <label>
+              Last name
+              <input
+                name="last_name"
+                value={profileForm.last_name}
+                onChange={updateProfileForm}
+                placeholder="Last name"
+              />
+            </label>
+            <label>
+              Email
+              <input
+                name="email"
+                type="email"
+                value={profileForm.email}
+                onChange={updateProfileForm}
+                placeholder="you@example.com"
+              />
+            </label>
+            <label>
+              Area
+              <select value={profileForm.location_name} onChange={chooseProfileLocation}>
+                {AREA_OPTIONS.map((area) => (
+                  <option key={area.key} value={area.name}>
+                    {area.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          {session.role === 'worker' ? (
+            <div className="profile-section">
+              <p className="field-label">Trade skills</p>
+              <div className="skill-grid">
+                {tradeSkills.map((skill) => (
+                  <button
+                    className={profileForm.skills.includes(skill) ? 'skill-chip selected' : 'skill-chip'}
+                    key={skill}
+                    type="button"
+                    onClick={() => toggleProfileSkill(skill)}
+                  >
+                    {skill}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <label className="wide-label">
+              Trade needed
+              <select name="looking_for" value={profileForm.looking_for} onChange={updateProfileForm}>
+                <option value="">Not sure yet</option>
+                {tradeSkills.map((skill) => (
+                  <option key={skill} value={skill}>
+                    {skill}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+
+          {formError && <p className="error-text">{formError}</p>}
+          {profileStatus && <p className="status-text">{profileStatus}</p>}
+
+          <div className="role-actions">
+            <button className="ghost-button" type="button" onClick={() => setView('dashboard')}>
+              Back
+            </button>
+            <button className="primary-button" type="submit" disabled={isBusy}>
+              {isBusy ? 'Saving...' : 'Save profile'}
+            </button>
+          </div>
+        </form>
+      )}
+
       {view === 'dashboard' && session && (
         <section className="dashboard">
           <div className="dashboard-heading">
@@ -548,6 +730,9 @@ function App() {
                   <h2>
                     {person.first_name} {person.last_name}
                   </h2>
+                  <a className="person-email" href={`mailto:${person.email}`}>
+                    {person.email}
+                  </a>
                   <p>{person.location_name} · {person.distance_km} km away</p>
                 </div>
                 {person.role === 'worker' ? (
@@ -559,7 +744,6 @@ function App() {
                 ) : (
                   <p className="need-label">Needs {person.looking_for || 'trade help'}</p>
                 )}
-                <a href={`mailto:${person.email}`}>{person.email}</a>
               </article>
             ))}
           </div>
@@ -594,6 +778,23 @@ async function apiRequest(path, options = {}) {
 
 function formatRole(role) {
   return role === 'worker' ? 'Worker' : 'Client'
+}
+
+function createProfileForm(user) {
+  if (!user) {
+    return INITIAL_PROFILE_FORM
+  }
+
+  return {
+    email: user.email || '',
+    first_name: user.first_name || '',
+    last_name: user.last_name || '',
+    location_name: user.location_name || AREA_OPTIONS[0].name,
+    latitude: user.latitude ?? AREA_OPTIONS[0].latitude,
+    longitude: user.longitude ?? AREA_OPTIONS[0].longitude,
+    skills: user.skills || [],
+    looking_for: user.looking_for || '',
+  }
 }
 
 export default App

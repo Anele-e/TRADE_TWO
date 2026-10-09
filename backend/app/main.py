@@ -51,6 +51,17 @@ class LoginRequest(BaseModel):
     password: str
 
 
+class ProfileUpdateRequest(BaseModel):
+    email: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
+    location_name: str | None = None
+    latitude: float | None = None
+    longitude: float | None = None
+    skills: list[str] | None = None
+    looking_for: str | None = None
+
+
 class UserResponse(BaseModel):
     id: int
     username: str
@@ -220,6 +231,44 @@ async def login(payload: LoginRequest):
     user = find_user_by_username(payload.username)
     if not user or user["password"] != payload.password:
         raise HTTPException(status_code=401, detail="Invalid username or password")
+
+    return AuthResponse(user=public_user(user))
+
+
+@app.patch("/users/{user_id}", response_model=AuthResponse)
+async def update_profile(user_id: int, payload: ProfileUpdateRequest):
+    user = find_user_by_id(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if payload.email is not None:
+        normalized_email = payload.email.strip().lower()
+        email_is_taken = any(
+            candidate["id"] != user_id and candidate["email"].lower() == normalized_email
+            for candidate in users
+        )
+        if email_is_taken:
+            raise HTTPException(status_code=409, detail="Email is already registered")
+        user["email"] = payload.email.strip()
+
+    if payload.first_name is not None:
+        user["first_name"] = payload.first_name.strip()
+    if payload.last_name is not None:
+        user["last_name"] = payload.last_name.strip()
+    if payload.location_name is not None:
+        user["location_name"] = payload.location_name.strip()
+    if payload.latitude is not None:
+        user["latitude"] = payload.latitude
+    if payload.longitude is not None:
+        user["longitude"] = payload.longitude
+
+    if user["role"] == "worker" and payload.skills is not None:
+        if not payload.skills:
+            raise HTTPException(status_code=400, detail="Workers must select at least one skill")
+        user["skills"] = payload.skills
+
+    if user["role"] == "client":
+        user["looking_for"] = payload.looking_for or None
 
     return AuthResponse(user=public_user(user))
 

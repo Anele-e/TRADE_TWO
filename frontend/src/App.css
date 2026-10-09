@@ -25,6 +25,7 @@
 }
 
 .brand-button,
+.profile-name-button,
 .ghost-button,
 .primary-button,
 .secondary-action,
@@ -39,6 +40,21 @@
   background: transparent;
   font-weight: 900;
   letter-spacing: 0.08rem;
+}
+
+.profile-name-button {
+  min-height: auto;
+  padding: 0;
+  color: #1f766d;
+  background: transparent;
+  font-weight: 900;
+  text-align: right;
+  cursor: pointer;
+}
+
+.profile-name-button:hover {
+  color: #185f58;
+  text-decoration: underline;
 }
 
 .session-actions {
@@ -164,8 +180,16 @@ select:focus {
 
 .wide-label,
 .location-row,
-.role-actions {
+.role-actions,
+.profile-section {
   margin-top: 1rem;
+}
+
+.field-label {
+  margin: 0 0 0.65rem;
+  color: #334247;
+  font-size: 0.92rem;
+  font-weight: 800;
 }
 
 .location-row,
@@ -362,6 +386,11 @@ select:focus {
   word-break: break-word;
 }
 
+.person-email {
+  display: inline-block;
+  margin-top: 0.35rem;
+}
+
 .mini-skill-list span,
 .need-label {
   border-radius: 999px;
@@ -404,5 +433,9 @@ select:focus {
   .profile-summary {
     max-width: none;
     text-align: left;
+  }
+
+  .profile-name-button {
+    text-align: center;
   }
 }
